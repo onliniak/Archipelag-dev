@@ -16,10 +16,10 @@
     </main>
     <script>
 let request = window.location.pathname
-let cached  = caches.match(request, {ignoreSearch: true}).then(html => console.log(html))
+let cached  = caches.match(request, {ignoreSearch: true})
 let article = document.getElementsByTagName('article')
 
-if (cached) {
+if (cached.then(html => console.log(html))) {
   article[0].appendChild(cached)
 } else {
   fetchPartials(request)
