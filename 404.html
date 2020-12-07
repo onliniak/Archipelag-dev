@@ -16,7 +16,7 @@
     </main>
     <script>
 let request = window.location.pathname
-let cached  = caches.match(request, {ignoreSearch: true})
+let cached  = caches.match(request, {ignoreSearch: true}).then(html => console.log(html))
 let article = document.getElementsByTagName('article')
 
 if (cached) {
