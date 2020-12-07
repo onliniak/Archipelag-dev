@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>txt2WebGame</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/webp" sizes="16x16" href="/favicon.webp">
+</head>
+
+<body>
+    <main style="display: grid; grid-template-columns: 2fr 5fr 2fr">
+        <section></section>
+        <article></article>
+        <section></section>
+    </main>
+    <script>
+        let request = window.location.pathname
+let cached  = Cache.match(request, {ignoreSearch: true})
+let article = document.getElementsByTagName('article')
+
+if (cached) {
+  article[0].appendChild(cached)
+} else {
+  fetchPartials(request)
+    .then(json => render(json))
+}
+
+async function fetchPartials(currentPage) {
+  let response = await fetch(`/json${currentPage}.json`)
+  return await response.json()
+}
+
+async function render(json) {
+  let parsed = JSON.parse(json)
+  let template = parsed.template
+
+  if (template === 'default') {
+    defaultTemplate(parsed.description, 'world')
+  }
+}
+
+function defaultTemplate(description, content, img = null) {
+  if (img) {
+    let newImg = Image(800, 600)
+    newImg.loading = 'lazy'
+    newImg.src = img
+    document.getElementById('article').appendChild(newImg)
+  }
+  document.getElementById('article')
+    .appendChild(`<div id="description">${description}</div>`)
+    .appendChild(`<div id="content">${content}</div>`)
+}
+    </script>
+</body>
+
+</html>
