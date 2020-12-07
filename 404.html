@@ -18,7 +18,7 @@
 let request = window.location.pathname
 let cached  = caches.match(request, {ignoreSearch: true})
 let article = document.getElementsByTagName('article')
-let ready = await cached
+let ready = async () => {await cached}
 
 if (ready) {
   article[0].appendChild(cached)
