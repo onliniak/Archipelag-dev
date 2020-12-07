@@ -15,8 +15,8 @@
         <section></section>
     </main>
     <script>
-        let request = window.location.pathname
-let cached  = Cache.match(request, {ignoreSearch: true})
+let request = window.location.pathname
+let cached  = caches.match(request, {ignoreSearch: true})
 let article = document.getElementsByTagName('article')
 
 if (cached) {
@@ -27,7 +27,7 @@ if (cached) {
 }
 
 async function fetchPartials(currentPage) {
-  let response = await fetch(`/json${currentPage}.json`)
+  let response = await fetch(`json${currentPage}.json`)
   return await response.json()
 }
 
