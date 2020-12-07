@@ -40,7 +40,7 @@ async function render(json) {
 }
         
 async function cached() {
-  await caches.match(request, {ignoreSearch: true})
+  return await caches.match(request, {ignoreSearch: true})
 }
 
 function defaultTemplate(description, content, img = null) {
