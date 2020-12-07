@@ -19,7 +19,7 @@ let request = window.location.pathname
 let cached  = caches.match(request, {ignoreSearch: true})
 let article = document.getElementsByTagName('article')
 
-if (cached.then(html => console.log(html)) != undefined) {
+if (await cached) {
   article[0].appendChild(cached)
 } else {
   fetchPartials(request)
