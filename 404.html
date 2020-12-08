@@ -25,14 +25,14 @@ cacche.then(function(response) {
   if (response != undefined) {
     article[0].appendChild(cacche)
   } else {
-    fetchPartials(request.substring(16)).then(json => render(json))
+    fetchPartials(`/${request.substring(16)}`).then(json => render(json))
   }
 })
         
 async function fetchPartials(currentPage) {
   let origin   = window.location.origin
   let skipFile = request.substring(0, request.lastIndexOf('/'));
-  let response = await fetch(`${origin}${skipFile}/json/${currentPage}.json`)
+  let response = await fetch(`${origin}${skipFile}/json${currentPage}.json`)
   return await response.json()
 }
         
