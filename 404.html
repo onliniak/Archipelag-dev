@@ -17,30 +17,29 @@
     <script>
 let request = window.location.pathname
 let article = document.getElementsByTagName('article')
+let cacche = caches.match(request, {
+  ignoreSearch: true
+})
 
-if (cached() ) {
-  article[0].appendChild(cached() )
-} else {
-  fetchPartials(request)
-    .then(json => render(json))
-}
-
+cacche.then(function(response) {
+  if (response != undefined) {
+    article[0].appendChild(cacche)
+  } else {
+    fetchPartials(request).then(json => render(json))
+  }
+})
+        
 async function fetchPartials(currentPage) {
   let response = await fetch(`json${currentPage}.json`)
   return await response.json()
 }
-
+        
 async function render(json) {
   let parsed = JSON.parse(json)
   let template = parsed.template
-
   if (template === 'default') {
     defaultTemplate(parsed.description, 'world')
   }
-}
-        
-async function cached() {
-  return await caches.match(request, {ignoreSearch: true})
 }
 
 function defaultTemplate(description, content, img = null) {
@@ -50,9 +49,9 @@ function defaultTemplate(description, content, img = null) {
     newImg.src = img
     document.getElementById('article').appendChild(newImg)
   }
-  document.getElementById('article')
-    .appendChild(`<div id="description">${description}</div>`)
-    .appendChild(`<div id="content">${content}</div>`)
+  document.getElementById('article').appendChild(
+    `<div id="description">${description}</div>`).appendChild(
+    `<div id="content">${content}</div>`)
 }
     </script>
 </body>
