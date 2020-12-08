@@ -49,7 +49,6 @@ function defaultTemplate(intro, content, img = null) {
     let div = document.createElement("div")
     let description = document.createTextNode(intro);
     let firstDiv = div.appendChild(description)
-    let secondDiv = div.appendChild(document.createTextNode(content))
     
   if (img) {
     let newImg = Image(800, 600)
@@ -59,7 +58,6 @@ function defaultTemplate(intro, content, img = null) {
   }
   document.getElementsByTagName('article')[0]
     .appendChild(firstDiv)
-    .appendChild(secondDiv)
 }
     </script>
 </body>
