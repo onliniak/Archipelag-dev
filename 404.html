@@ -37,7 +37,6 @@ async function fetchPartials(currentPage) {
 }
         
 async function render(json) {
-  //let parsed = await JSON.parse(json)
   let parsed = await json
   let template = parsed.template
   if (template === 'default') {
@@ -50,9 +49,9 @@ function defaultTemplate(description, content, img = null) {
     let newImg = Image(800, 600)
     newImg.loading = 'lazy'
     newImg.src = img
-    document.getElementById('article').appendChild(newImg)
+    document.getElementsByTagName('article')[0].appendChild(newImg)
   }
-  document.getElementById('article').appendChild(
+  document.getElementsByTagName('article')[0].appendChild(
     `<div id="description">${description}</div>`).appendChild(
     `<div id="content">${content}</div>`)
 }
