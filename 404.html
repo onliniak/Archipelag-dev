@@ -30,7 +30,9 @@ cacche.then(function(response) {
 })
         
 async function fetchPartials(currentPage) {
-  let response = await fetch(`json${currentPage}.json`)
+  let origin   = window.location.origin
+  let skipFile = request.substring(0, request.lastIndexOf('/'));
+  let response = await fetch(`${origin}${skipFile}/json/${currentPage}.json`)
   return await response.json()
 }
         
