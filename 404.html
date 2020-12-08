@@ -25,7 +25,8 @@ cacche.then(function(response) {
   if (response != undefined) {
     article[0].appendChild(cacche)
   } else {
-    fetchPartials(`/${request.substring(16)}`).then(json => render(json))
+    fetchPartials(`/${request.substring(16)}`)
+      .then(json => render(json))
   }
 })
         
@@ -51,9 +52,9 @@ function defaultTemplate(description, content, img = null) {
     newImg.src = img
     document.getElementsByTagName('article')[0].appendChild(newImg)
   }
-  document.getElementsByTagName('article')[0].appendChild(
-    `<div id="description">${description}</div>`).appendChild(
-    `<div id="content">${content}</div>`)
+  document.getElementsByTagName('article')[0]
+    .appendChild(`<div id="description">${description}</div>`)
+    .appendChild(`<div id="content">${content}</div>`)
 }
     </script>
 </body>
