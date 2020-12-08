@@ -37,7 +37,8 @@ async function fetchPartials(currentPage) {
 }
         
 async function render(json) {
-  let parsed   = await JSON.parse(json)
+  //let parsed = await JSON.parse(json)
+  let parsed = await json
   let template = parsed.template
   if (template === 'default') {
     defaultTemplate(parsed.description, 'world')
