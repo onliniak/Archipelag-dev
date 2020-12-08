@@ -25,7 +25,7 @@ cacche.then(function(response) {
   if (response != undefined) {
     article[0].appendChild(cacche)
   } else {
-    fetchPartials(request).then(json => render(json))
+    fetchPartials(request.substring(16)).then(json => render(json))
   }
 })
         
