@@ -108,9 +108,7 @@ async function render(json) {
   
   if (template === 'default') {
     defaultTemplate(parsed.description, 'world')
-    caches.open(request.substring(16)).then(function(cache) {
-      set(fileName, currentHTML);
-    });  
+      set(fileName, currentHtml);
   }
 }
 
