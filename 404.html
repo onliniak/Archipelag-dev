@@ -58,44 +58,30 @@ function set(key, value, store = getDefaultStore()) {
     store.put(value, key)
   })
 }
-function del(key, store = getDefaultStore()) {
-  return store._withIDBStore('readwrite', store => {
-    store.delete(key)
-  })
-}
-function clear(store = getDefaultStore()) {
-  return store._withIDBStore('readwrite', store => {
-    store.clear()
-  })
-}
-function keys(store = getDefaultStore()) {
-  const keys = []
-  return store._withIDBStore('readonly', store => {
-  // This would be store.getAllKeys(), but it isn't supported by Edge or Safari.
-  // And openKeyCursor isn't supported by Safari.
-    (store.openKeyCursor || store.openCursor).call(store).onsuccess = function () {
-      if (!this.result)
-        return
-      keys.push(this.result.key)
-      this.result.continue()
-    }
-  }).then(() => keys)
-}
+            
 let cacche = get(`${fileName}Intro`)
+let Img = get(`${fileName}Img`)
 
 cacche.then(function(response) {
   if (response != undefined) {
-      if (get(`${fileName}Img`)) {
-    newImg = new Image(800, 600)
-    newImg.loading = 'lazy'
-    newImg.src = get(`${fileName}Img`)
-    document.getElementsByTagName('article')[0]
-        .appendChild(newImg)
-      }
       
     div = document.createElement("div")
+    div.id = "main"
     description = document.createTextNode(get(`${fileName}Intro`));
     Intro = div.appendChild(description)
+      
+  Img.then(function(response) {
+    if (response != undefined) {
+      newImg = new Image(800, 600)
+      newImg.loading = 'lazy'
+      newImg.src = response
+      document.getElementById('main')
+        .appendChild(newImg)
+      }
+        
+ var sp2 = document.getElementById("main");
+ var parentDiv = sp2.parentNode;
+ parentDiv.insertBefore(sp1, sp2);
       
     //div2 = document.createElement("div")
     //mainHtml = document.createTextNode(get(`${fileName}Intro`));
