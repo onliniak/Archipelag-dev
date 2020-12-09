@@ -6,14 +6,6 @@
     <title>txt2WebGame</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/webp" sizes="16x16" href="https://onliniak.github.io/Archipelag-dev/favicon.webp">
-</head>
-
-<body>
-    <main style="display: grid; grid-template-columns: 2fr 5fr 2fr">
-        <section></section>
-        <article></article>
-        <section></section>
-    </main>
     <script>
 let request = window.location.pathname
 let article = document.getElementsByTagName('article')
@@ -29,6 +21,16 @@ cacche.then(function(response) {
       .then(json => render(json))
   }
 })
+    </script>
+</head>
+
+<body>
+    <main style="display: grid; grid-template-columns: 2fr 5fr 2fr">
+        <section></section>
+        <article></article>
+        <section></section>
+    </main>
+    <script>
         
 async function fetchPartials(currentPage) {
   let origin   = window.location.origin
@@ -40,8 +42,12 @@ async function fetchPartials(currentPage) {
 async function render(json) {
   let parsed = await json
   let template = parsed.template
+  let currentHtml = new XMLSerializer().serializeToString(document)
+  let request = window.location.pathname
+  
   if (template === 'default') {
     defaultTemplate(parsed.description, 'world')
+    Cache.put(request, currentHtml);
   }
 }
 
@@ -54,7 +60,8 @@ function defaultTemplate(intro, content, img = null) {
     let newImg = Image(800, 600)
     newImg.loading = 'lazy'
     newImg.src = img
-    document.getElementsByTagName('article')[0].appendChild(newImg)
+    document.getElementsByTagName('article')[0]
+        .appendChild(newImg)
   }
   document.getElementsByTagName('article')[0]
     .appendChild(firstDiv)
