@@ -6,8 +6,8 @@
     <title>txt2WebGame</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/webp" sizes="16x16" href="https://onliniak.github.io/Archipelag-dev/favicon.webp">
-    <script type="module">
-      import { get, set } from 'https://cdn.jsdelivr.net/npm/idb-keyval@3.2.0/dist/idb-keyval.mjs';
+    <script src="https://cdn.jsdelivr.net/npm/idb-keyval@3/dist/idb-keyval-iife.min.js"></script>
+    <script>
       let cacche = get(fileName)
       let request = window.location.pathname
       let fileName = request.substring(16)
