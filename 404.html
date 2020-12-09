@@ -8,12 +8,12 @@
     <link rel="icon" type="image/webp" sizes="16x16" href="https://onliniak.github.io/Archipelag-dev/favicon.webp">
     <script type="module">
       import { get, set } from 'https://cdn.jsdelivr.net/npm/idb-keyval@3.2.0/dist/idb-keyval.mjs';
+      let cacche = get(fileName)
     </script>
     <script>
 let request = window.location.pathname
 let fileName = request.substring(16)
 let article = document.getElementsByTagName('article')
-let cacche = get(fileName)
 
 cacche.then(function(response) {
   if (response != undefined) {
