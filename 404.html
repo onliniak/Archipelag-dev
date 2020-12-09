@@ -6,18 +6,20 @@
     <title>txt2WebGame</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/webp" sizes="16x16" href="https://onliniak.github.io/Archipelag-dev/favicon.webp">
+    <script type="module">
+      import { set, get } from 'https://cdn.jsdelivr.net/npm/idb-keyval@3.2.0/dist/idb-keyval.mjs'
+    </script>
     <script>
 let request = window.location.pathname
+let fileName = request.substring(16)
 let article = document.getElementsByTagName('article')
-let cacche = caches.match(request, {
-  ignoreSearch: true
-})
+let cacche = get(fileName)
 
 cacche.then(function(response) {
   if (response != undefined) {
     article[0].appendChild(cacche)
   } else {
-    fetchPartials(`/${request.substring(16)}`)
+    fetchPartials(fileName)
       .then(json => render(json))
   }
 })
@@ -47,7 +49,7 @@ async function render(json) {
   if (template === 'default') {
     defaultTemplate(parsed.description, 'world')
     caches.open(request.substring(16)).then(function(cache) {
-      cache.put(request, new Response(currentHtml) );
+      set(fileName, currentHTML);
     });  
   }
 }
