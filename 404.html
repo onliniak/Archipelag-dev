@@ -86,7 +86,7 @@ let cacche = get(`${fileName}Intro`)
 cacche.then(function(response) {
   if (response != undefined) {
       if (get(`${fileName}Img`)) {
-    newImg = Image(800, 600)
+    newImg = new Image(800, 600)
     newImg.loading = 'lazy'
     newImg.src = get(`${fileName}Img`)
     document.getElementsByTagName('article')[0]
@@ -133,7 +133,7 @@ async function defaultTemplate(intro, content, img = null) {
     let firstDiv = div.appendChild(description)
     
   if (img) {
-    let newImg = Image(800, 600)
+    let newImg = new Image(800, 600)
     newImg.loading = 'lazy'
     newImg.src = img
     document.getElementsByTagName('article')[0]
