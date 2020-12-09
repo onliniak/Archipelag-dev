@@ -6,7 +6,15 @@
     <title>txt2WebGame</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/webp" sizes="16x16" href="https://onliniak.github.io/Archipelag-dev/favicon.webp">
-    <script>
+</head>
+
+<body>
+    <main style="display: grid; grid-template-columns: 2fr 5fr 2fr">
+        <section></section>
+        <article></article>
+        <section></section>
+    </main>
+        <script>
 let request = window.location.pathname
 let fileName = request.substring(16)
 let article = document.getElementsByTagName('article')
@@ -73,30 +81,35 @@ function keys(store = getDefaultStore()) {
     }
   }).then(() => keys)
 }
-let cacche = get(fileName)
+let cacche = get(`${fileName}Description`)
 
 cacche.then(function(response) {
   if (response != undefined) {
-      div = document.createElement("div")
-      txt  = document.createTextNode(response);
-      currentHTML = div.appendChild(txt);
+      if (get(`${fileName}Img`)) {
+    newImg = Image(800, 600)
+    newImg.loading = 'lazy'
+    newImg.src = get(`${fileName}Img`)
+    document.getElementsByTagName('article')[0]
+        .appendChild(newImg)
+      }
       
-    document.getElementsByTagName("article")[0].appendChild(currentHTML)
+    div = document.createElement("div")
+    description = document.createTextNode(get(`${fileName}Intro`));
+    Intro = div.appendChild(description)
+      
+    //div2 = document.createElement("div")
+    //mainHtml = document.createTextNode(get(`${fileName}Intro`));
+    //Content = div.appendChild(mainHtml)
+      
+    document.getElementsByTagName("article")[0]
+        .appendChild(Intro)
   } else {
     fetchPartials(fileName)
       .then(json => render(json))
   }
 })
     </script>
-</head>
-
-<body>
-    <main style="display: grid; grid-template-columns: 2fr 5fr 2fr">
-        <section></section>
-        <article></article>
-        <section></section>
-    </main>
-    <script>
+    <script async>
         
 async function fetchPartials(currentPage) {
   let origin   = window.location.origin
@@ -108,7 +121,6 @@ async function fetchPartials(currentPage) {
 async function render(json) {
   let parsed = await json
   let template = parsed.template
-  let currentHtml = new XMLSerializer().serializeToString(document)
   
   if (template === 'default') {
     defaultTemplate(parsed.description, 'world')
@@ -116,7 +128,7 @@ async function render(json) {
   }
 }
 
-function defaultTemplate(intro, content, img = null) {
+async function defaultTemplate(intro, content, img = null) {
     let div = document.createElement("div")
     let description = document.createTextNode(intro);
     let firstDiv = div.appendChild(description)
@@ -127,9 +139,11 @@ function defaultTemplate(intro, content, img = null) {
     newImg.src = img
     document.getElementsByTagName('article')[0]
         .appendChild(newImg)
+    set(`${fileName}Img`, img)
   }
   document.getElementsByTagName('article')[0]
     .appendChild(firstDiv)
+  set(`${fileName}Intro`, intro)
 }
     </script>
 </body>
