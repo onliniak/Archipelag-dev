@@ -77,7 +77,7 @@ let cacche = get(fileName)
 
 cacche.then(function(response) {
   if (response != undefined) {
-    article[0].appendChild(cacche)
+    document.getElementsByTagName("article")[0].appendChild(cacche)
   } else {
     fetchPartials(fileName)
       .then(json => render(json))
