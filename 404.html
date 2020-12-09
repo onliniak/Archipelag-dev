@@ -77,12 +77,12 @@ cacche.then(function (response) {
         newImg.src = response
         document.getElementById('main')
           .appendChild(newImg)
-      })
+      }
 
       var sp2 = document.getElementById("main");
       var parentDiv = sp2.parentNode;
       parentDiv.insertBefore(sp1, sp2);
-    }
+    })
 
       //div2 = document.createElement("div")
       //mainHtml = document.createTextNode(get(`${fileName}Intro`));
