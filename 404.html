@@ -58,41 +58,41 @@ function set(key, value, store = getDefaultStore()) {
     store.put(value, key)
   })
 }
-            
+
 let cacche = get(`${fileName}Intro`)
 let Img = get(`${fileName}Img`)
 
-cacche.then(function(response) {
+cacche.then(function (response) {
   if (response != undefined) {
-      
+
     div = document.createElement("div")
     div.id = "main"
     description = document.createTextNode(get(`${fileName}Intro`));
     Intro = div.appendChild(description)
-      
-  Img.then(function(response) {
-    if (response != undefined) {
-      newImg = new Image(800, 600)
-      newImg.loading = 'lazy'
-      newImg.src = response
-      document.getElementById('main')
-        .appendChild(newImg)
+
+    Img.then(function (response) {
+      if (response != undefined) {
+        newImg = new Image(800, 600)
+        newImg.loading = 'lazy'
+        newImg.src = response
+        document.getElementById('main')
+          .appendChild(newImg)
       }
-        
- var sp2 = document.getElementById("main");
- var parentDiv = sp2.parentNode;
- parentDiv.insertBefore(sp1, sp2);
-      
-    //div2 = document.createElement("div")
-    //mainHtml = document.createTextNode(get(`${fileName}Intro`));
-    //Content = div.appendChild(mainHtml)
-      
-    document.getElementsByTagName("article")[0]
+
+      var sp2 = document.getElementById("main");
+      var parentDiv = sp2.parentNode;
+      parentDiv.insertBefore(sp1, sp2);
+
+      //div2 = document.createElement("div")
+      //mainHtml = document.createTextNode(get(`${fileName}Intro`));
+      //Content = div.appendChild(mainHtml)
+
+      document.getElementsByTagName("article")[0]
         .appendChild(Intro)
-  } else {
-    fetchPartials(fileName)
+    } else {
+      fetchPartials(fileName)
       .then(json => render(json))
-  }
+    }
 })
     </script>
     <script async>
