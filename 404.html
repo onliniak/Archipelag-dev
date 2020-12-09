@@ -77,7 +77,11 @@ let cacche = get(fileName)
 
 cacche.then(function(response) {
   if (response != undefined) {
-    document.getElementsByTagName("article")[0].appendChild(cacche)
+      div = document.createElement("div")
+      txt  = document.createTextNode(response);
+      currentHTML = div.appendChild(txt);
+      
+    document.getElementsByTagName("article")[0].appendChild(currentHTML)
   } else {
     fetchPartials(fileName)
       .then(json => render(json))
