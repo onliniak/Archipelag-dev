@@ -1,137 +1,235 @@
 <!DOCTYPE html>
-<html>
+<html lang="pl-PL">
 
 <head>
-    <meta charset="utf-8" />
-    <title>txt2WebGame</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/webp" sizes="16x16" href="https://onliniak.github.io/Archipelag-dev/favicon.webp">
+  <meta charset="utf-8" />
+  <title>txt2WebGame</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/webp" sizes="16x16" href="/favicon.webp">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/picomodal/3.0.0/picoModal.min.js"></script>
+  <style>
+    @import url('https://unpkg.com/sakura.css/css/sakura-vader.css') (prefers-color-scheme: dark);
+    @import url('https://unpkg.com/sakura.css/css/sakura.css') (prefers-color-scheme: ligth);
+
+    .hide {
+      display: none;
+    }
+
+    :target {
+      display: block;
+      border-top: 1px solid;
+      margin-top: 10px;
+      padding-top: 10px;
+    }
+
+    html {
+      margin: 15px;
+    }
+
+    body {
+      display: -ms-grid;
+      display: grid;
+      -ms-grid-columns: 1fr 2.5fr 1fr;
+      grid-template-columns: 1fr 2.5fr 1fr;
+      max-width: 100%;
+    }
+  </style>
 </head>
 
 <body>
-    <main style="display: grid; grid-template-columns: 2fr 5fr 2fr">
-        <section></section>
-        <article></article>
-        <section></section>
-    </main>
-        <script>
-let request = window.location.pathname
-let fileName = request.substring(16)
-let article = document.getElementsByTagName('article')
+  <section></section>
+  <article></article>
+  <section>
+    <button type="button" onclick="location.href='#layout'">Zwykła strona</button>
+    <button type="button" onclick="city.show();window['pico-1'].style['display']='grid';window['pico-1'].style['background-color']='inherit';window['pico-1'].style['border']='5px solid'
+    ">Miasto</button>
+    <button type="button" onclick="location.href='#txt'">Tekst</button>
 
-class Store {
-  constructor(dbName = 'keyval-store', storeName = 'keyval') {
-    this.storeName = storeName
-    this._dbp = new Promise((resolve, reject) => {
-      const openreq = indexedDB.open(dbName, 1)
-      openreq.onerror = () => reject(openreq.error)
-      openreq.onsuccess = () => resolve(openreq.result)
-      // First time setup: create an empty object store
-      openreq.onupgradeneeded = () => {
-        openreq.result.createObjectStore(storeName)
+    <div class="hide" id="layout">
+      <button onclick="updateLayout('img')">Zdjęcie</button>
+    </div>
+
+    <div class="hide" id="txt">
+      <textarea name="txt" cols="30" rows="4"></textarea>
+    </div>
+  </section>
+
+  <script>
+    const layout = {}
+    let article = document.getElementsByTagName('article')[0]
+    let city = picoModal(`
+    <label for="cityName">Podaj nazwę miasta</label>
+    <input type="text" name="cityName">
+    <textarea name="city" cols="30" rows="10">DzielnicaPierwsza:
+  name1: link1
+  name2: link2
+  name3: link3
+  name4: link4
+dzielnica_druga:
+  another_name1: betterLink
+  another_name2: betterLink2
+  another_name3: betterLink3</textarea>
+  <details>
+  <summary>Ustawienia zaawansowane</summary>
+  <label for="cityColumns">Na ile części podzielić ekran ?</label>
+    <input type="number" name="cityColumns" value="3" min="1">
+</details> 
+<details>
+  <summary>"Instrukcja"</summary>
+  <ol>
+<li>Żeby stworzyć miasto, zacznij od podania nazwy dzielnicy.
+<ol>
+<li>Zakończ dwukropkiem.</li>
+<li>Poszczególne wyrazy oddziel _</li>
+<li>Przed dużymi literami zostanie wpisana spacja.</li>
+</ol>
+</li>
+<li>Enter.</li>
+<li>Dwie spacje.</li>
+<li>Podaj nazwę pierwszej lokacji.
+<ol>
+<li>Zakończ dwukropkiem.</li>
+<li>Poszczególne wyrazy oddziel _</li>
+<li>Przed dużymi literami nie pojawi się spacja.</li>
+</ol>
+</li>
+<li>Dwie spacje.</li>
+<li>Podaj nazwę strony, do której ma prowadzić link
+<ol>
+<li>Czyli jeśli link to strona.pl/strona123 → wpisz strona123</li>
+<li>Nie używaj spacji</li>
+</ol>
+</li>
+<li>Enter.</li>
+<li>I kolejne lokacje …</li>
+<li>Albo po prostu spójrz na przykład.</li>
+<li>Gdy skończysz, wyświetl miasto by zobaczyć jak będzie wyglądać.</li>
+<li>Możesz podzielić ekran na dowolną liczbę kolumn, domyślnie są 3.
+</li>
+<li>Podaj nazwę miasta
+<ol>
+<li>Pojawi się w adresie strony.</li>
+<li>Pozwoli na dopasowanie odpowiedniego zdjęcia i opisu miasta.</li>
+</ol>
+</li>
+<li>I wyślij, w ciągu kilku minut nowe miasto pojawi się w grze.</li>
+</ol>
+</details> 
+    <button onclick="renderCity()">Wyświetl miasto</button>
+    <button onclick="publishCity()">Opublikuj miasto</button>
+    `);
+
+    function updateLayout(element) {
+      if (element == 'img') {
+        Img()
       }
-    })
-  }
-  _withIDBStore(type, callback) {
-    return this._dbp.then(db => new Promise((resolve, reject) => {
-      const transaction = db.transaction(this.storeName, type)
-      transaction.oncomplete = () => resolve()
-      transaction.onabort = transaction.onerror = () => reject(transaction.error)
-      callback(transaction.objectStore(this.storeName))
-    }))
-  }
-}
-let store
-function getDefaultStore() {
-  if (!store)
-    store = new Store()
-  return store
-}
-function get(key, store = getDefaultStore()) {
-  let req
-  return store._withIDBStore('readonly', store => {
-    req = store.get(key)
-  }).then(() => req.result)
-}
-function set(key, value, store = getDefaultStore()) {
-  return store._withIDBStore('readwrite', store => {
-    store.put(value, key)
-  })
-}
-
-let cacche = get(`${fileName}Intro`)
-let Img = get(`${fileName}Img`)
-
-cacche.then(function (response) {
-  if (response != undefined) {
-
-    div = document.createElement("div")
-    div.id = "main"
-    description = document.createTextNode(get(`${fileName}Intro`));
-    Intro = div.appendChild(description)
-
-    Img.then(function (response) {
-      if (response != undefined) {
-        newImg = new Image(800, 600)
-        newImg.loading = 'lazy'
-        newImg.src = response
-        document.getElementById('main')
-          .appendChild(newImg)
+      if (element == 'txt') {
+        Txt()
       }
-
-      var sp2 = document.getElementById("main");
-      var parentDiv = sp2.parentNode;
-      parentDiv.insertBefore(sp1, sp2);
-    })
-
-      //div2 = document.createElement("div")
-      //mainHtml = document.createTextNode(get(`${fileName}Intro`));
-      //Content = div.appendChild(mainHtml)
-
-      document.getElementsByTagName("article")[0]
-        .appendChild(Intro)
-    } else {
-      fetchPartials(fileName)
-      .then(json => render(json))
+      if (element == 'link') {
+        Link()
+      }
+      console.log(layout)
     }
-})
-    </script>
-    <script async>
-        
-async function fetchPartials(currentPage) {
-  let origin   = window.location.origin
-  let skipFile = request.substring(0, request.lastIndexOf('/'));
-  let response = await fetch(`${origin}${skipFile}/json/${currentPage}.json`)
-  return await response.json()
-}
-        
-async function render(json) {
-  let parsed = await json
-  let template = parsed.template
-  
-  if (template === 'default') {
-    defaultTemplate(parsed.description, 'world')
-  }
-}
 
-async function defaultTemplate(intro, content, img = null) {
-    let div = document.createElement("div")
-    let description = document.createTextNode(intro);
-    let firstDiv = div.appendChild(description)
-    
-  if (img) {
-    let newImg = new Image(800, 600)
-    newImg.loading = 'lazy'
-    newImg.src = img
-    document.getElementsByTagName('article')[0]
-        .appendChild(newImg)
-    set(`${fileName}Img`, img)
-  }
-  document.getElementsByTagName('article')[0]
-    .appendChild(firstDiv)
-  set(`${fileName}Intro`, intro)
-}
-    </script>
+    function Img() {
+      var img = prompt("Wpisz adres swojego zdjęcia");
+      if (img != null) {
+        //imgWidth = article.offsetWidth * 0.79
+        //imgHeight = screen.height * 0.415
+        let newImg = new Image()
+        newImg.loading = 'lazy'
+        newImg.src = img
+        newImg.style['margin'] = '0px -10.5% auto -10.5%'
+
+        layout.img = img
+        article.appendChild(newImg)
+      }
+    }
+    function renderCity() {
+      const str = document.getElementsByName("city")[0].textContent
+      const regexp = /(?<category>\w*):\s*((?<a>\w*):\s+(?<href>\w*))*(\w*)*/g
+      const array = [...str.matchAll(regexp)]
+
+      const district = /^\S$|^\S*\S$/gm
+      const str2 = str.replaceAll(/:/g, '')
+      const array2 = [...str2.matchAll(district)]
+      let i, g, a, r
+      r = {}
+
+      function dynamicArrayVariables(variable) {
+        window[variable] = []
+      }
+      array2.forEach(dynamicArrayVariables)
+
+      for (i = 0; i < array.length; i++) {
+        if (typeof array[i][5] === 'undefined')
+          g = i
+        if (typeof array[i][3] != 'undefined') {
+          let key = array[i][3]
+          window[array[g][1]].push({
+            [key]: array[i][4]
+          })
+        }
+
+        if (typeof array[i][3] === 'undefined')
+          if (array[i][1] != array[i][3]) {
+            let key = array[i][1]
+            window[array[g][1]].push({
+              [key]: array[i][5]
+            })
+          }
+      }
+
+      const links = str.toString()
+
+      for (i = 0; i < array2.length; i++) {
+        const length = window[array2[i]].length
+
+        for (a = 0; a < length; a++) {
+
+          const regex = new RegExp(`${array2[i].toString()}:(\\s*(\\w*):\\s*(\\w*)){${a + 1}}`, "g")
+          const found = [...links.matchAll(regex)]
+
+          mainCategory = array2[i].toString()
+          r[`${mainCategory}Links`] += `${found[0][3]}@`
+          r[`${mainCategory}Names`] += `${found[0][2]}@`
+
+        }
+        arrayNames = r[`${mainCategory}Names`]
+          .replace("undefined", "")
+          .replaceAll("_", " ")
+          .split("@")
+
+        arrayLinks = r[`${mainCategory}Links`]
+          .replace("undefined", "")
+          .split("@")
+
+        columns = document.getElementsByName('cityColumns')[0].value
+        div = document.createElement('div')
+        div.id = mainCategory
+        div.style['display'] = 'grid'
+        div.style['justify-items'] = 'center'
+        article.style['display'] = 'grid'
+        article.style['grid-template-columns'] = 'auto '.repeat(columns)
+        a = mainCategory.replace(/([A-Z])/g, ' $1')
+        b = a.replace(/_/g, ' ')
+
+        dzielnica = document.createElement('strong')
+        dzielnica.textContent = b
+        article.appendChild(div);
+        div.appendChild(dzielnica)
+
+        for (c = 0; c < length; c++) {
+          link = document.createElement('a')
+          link.setAttribute('href', arrayLinks[c])
+          link.textContent = arrayNames[c]
+          document.getElementById(mainCategory).appendChild(link);
+        }
+      }
+    }
+
+  </script>
 </body>
 
 </html>
